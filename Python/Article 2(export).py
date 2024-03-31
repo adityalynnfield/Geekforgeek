@@ -103,11 +103,45 @@ sns.violinplot(x="Sex", y="Age", hue="Survived", data=df, split=True, ax=ax3)
 
 
 #### bar plot stacked
+
+fig2 = plt.figure(figsize=(15,5))
+ax11 = fig2.add_subplot(131)
+ax21 = fig2.add_subplot(132)
+
 tab = pd.crosstab(df['Pclass'], df['Sex'])
 print (tab)
 
 
-tab.div(tab.sum(1).astype(float), axis=0).plot(kind="bar", stacked=True)
-plt.xlabel('Pclass')
-plt.ylabel('Percentage')
+tab.div(tab.sum(1).astype(float), axis=0).plot(kind="bar", stacked=True, ax=ax11)
+
+## scatter plot
+plt.xlabel('Survived')
+plt.ylabel('Age')
+
+sns.scatterplot(x="Survived", y="Age",
+                    data=df, ax=ax21)
+
+############# heat map
+#Different color schemes
+#"cividis"
+#"inferno"
+#"plasma"
+#"magma"
+#"coolwarm"
+#"BuGn"
+#"RdPu"
+
+# Calculate survival rates by gender and passenger class
+survival_rates = df.groupby(['Sex', 'Pclass'])['Survived'].mean().reset_index()
+
+# Pivot the data to create a heatmap-friendly format
+pivot_data = survival_rates.pivot_table(index='Sex', columns='Pclass', values='Survived')
+
+# Plot the heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(pivot_data, annot=True, fmt=".2f", cmap="coolwarm")
+plt.title('Survival Rate Heat Map by Gender and Passenger Class')
+plt.xlabel('Passenger Class')
+plt.ylabel('Gender')
+plt.show()
 
